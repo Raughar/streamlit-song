@@ -130,7 +130,7 @@ if select == 'song':
                     song_features = scaler.transform([song_features])
                     song_cluster = kmeans.predict(song_features)
                     similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
-                    print(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
+                    st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
                 else:
                     #Searching for the song in Spotify with the help of Spotipy
                     results = sp.search(q=song, limit=1)
@@ -143,7 +143,7 @@ if select == 'song':
                     song_features = scaler.transform(song_features)
                     song_cluster = kmeans.predict(song_features)
                     similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
-                    print(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
+                    st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
 
 # If the user selects artist, we will ask for the name of the artist
 else:
@@ -165,4 +165,4 @@ else:
                 song_features = scaler.transform(song_features)
                 song_cluster = kmeans.predict(song_features)
                 similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
-                print(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
+                st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
