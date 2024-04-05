@@ -105,12 +105,14 @@ clustered_features['cluster'] = cluster
 st.title('Song Recommender')
 st.write('This is a simple song recommender app.')
 
-# Display the Billboard Hot 100 songs
-st.subheader('Billboard Hot 100 Songs')
-st.dataframe(billboard)
+# Display the Billboard Hot 100 songs on the sidebar
+st.sidebar.title('Billboard Hot 100')
+st.sidebar.write('Here are the top 10 songs in the Billboard Hot 100:')
+for i in range(10):
+    st.sidebar.write(f'{billboard["Song"].values[i]} by {billboard["Artist"].values[i]}')
 
 # Add a selectbox for the user to choose whether they want to search by song or artist
-select = st.selectbox('Do you want to search by song or artist?', ('song', 'artist'))
+select = st.selectbox('Do you want to search by song or artist?', ('Song', 'Artist'))
 
 # If the user selects song, we will ask for the name of the song
 if select == 'song':
@@ -123,7 +125,10 @@ if select == 'song':
             st.write(f'We recommend the song {random_song["Song"].values[0]} by {random_song["Artist"].values[0]}')
         else:
             st.write('The song is not in the Billboard Hot 100')
-            if st.button('Would you like a random song that is not in the Billboard Hot 100?'):
+            st.write('Would you like a random song that is not in the Billboard Hot 100?'):
+            if st.button('No'):
+                st.write('Thank you for using the app!')
+            if st.button('Yes'):
                 if song in list(features['name']):
                     song_index = features[features['name'] == song].index[0]
                     song_features = selected_features.iloc[song_index]
@@ -156,7 +161,10 @@ else:
             st.write(f'We recommend the song {random_song["Song"].values[0]} by {random_song["Artist"].values[0]}')
         else:
             st.write('The artist is not in the Billboard Hot 100')
-            if st.button('Would you like a random song that is not in the Billboard Hot 100?'):
+            st.write(f'Would you like a random song similar to {artist} songs that is not in the Billboard Hot 100?'):
+            if st.button('No'):
+                st.write('Thank you for using the app!')
+            if st.button('Yes'):
                #Getting the artist's most popular song
                 song_id = get_popular_song(artist)
                 song_features = get_song_features(song_id)
