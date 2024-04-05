@@ -9,7 +9,6 @@ import requests
 from bs4 import BeautifulSoup
 from spotipy.oauth2 import SpotifyClientCredentials
 import os
-import dotenv
 warnings.filterwarnings("ignore")
 
 #Function to get the Billboard Hot 100 songs
