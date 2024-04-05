@@ -72,6 +72,13 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 features = pd.read_csv('files/kaggle_spotify_dataset.csv')
 billboard = get_billboard_top()
 
+#Create a dataframe with the features of the songs
+selected_features = features.drop(columns=['id', 'name', 'album', 'album_id', 'artists', 'artist_ids', 'track_number', 'disc_number', 'release_date'])
+
+#Scaling the features
+scaler = StandardScaler()
+scaled_features = scaler.fit_transform(selected_features)
+
 # Running KMeans
 kmeans = KMeans(n_clusters=15, init='k-means++', max_iter=300, n_init=10, random_state=0)
 kmeans.fit(scaled_features)
