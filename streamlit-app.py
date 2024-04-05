@@ -82,7 +82,7 @@ features.rename(columns={'track_id':'id', 'track_name':'name', 'album_name':'alb
 features = features[['id', 'name', 'album', 'artists', 'explicit', 'danceability', 'energy','key', 'loudness', 'mode', 'speechiness', 'acousticness','instrumentalness', 'liveness', 'valence', 'tempo', 'duration_ms','time_signature']]
 
 #Create a dataframe with the features of the songs
-selected_features = features.drop(columns=['track_id', 'name', 'album', 'album_id', 'artists'])
+selected_features = features.drop(columns=['id', 'name', 'album', 'artists'])
 
 #Scaling the features
 scaler = StandardScaler()
