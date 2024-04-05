@@ -103,13 +103,13 @@ clustered_features['cluster'] = cluster
 
 # Streamlit code
 st.title('Song Recommender')
-st.write('This is a simple song recommender app.')
+st.write('A song recomendation app')
 
 # Display the Billboard Hot 100 songs on the sidebar
-st.sidebar.title('Billboard Hot 100')
-st.sidebar.write('Here are the top 10 songs in the Billboard Hot 100:')
-for i in range(10):
-    st.sidebar.write(f'{billboard["Song"].values[i]} by {billboard["Artist"].values[i]}')
+# st.sidebar.title('Billboard Hot 100')
+# st.sidebar.write('Here are the top 10 songs in the Billboard Hot 100:')
+# for i in range(10):
+#     st.sidebar.write(f'{billboard["Song"].values[i]} by {billboard["Artist"].values[i]}')
 
 # Add a selectbox for the user to choose whether they want to search by song or artist
 select = st.selectbox('Do you want to search by song or artist?', ('Song', 'Artist'))
@@ -174,3 +174,9 @@ else:
                 song_cluster = kmeans.predict(song_features)
                 similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
                 st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
+#Footer
+st.write('Made by: [Samuel Carmona] ( www.linkedin.com/in/samuelcskories )')
+st.write('GitHub: ( https://github.com/Raughar )')
+st.write('Data Source: [Kaggle Spotify Dataset] (https://www.kaggle.com/yamaerenay/spotify-dataset-19212020-160k-tracks)')
+st.write('Data Source: [Billboard Hot 100] (https://www.billboard.com/charts/hot-100/)')
+st.write('API Source: [Spotify API] (https://developer.spotify.com/documentation/web-api/)')
