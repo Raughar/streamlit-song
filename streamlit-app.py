@@ -125,7 +125,7 @@ if select == 'song':
             st.write(f'We recommend the song {random_song["Song"].values[0]} by {random_song["Artist"].values[0]}')
         else:
             st.write('The song is not in the Billboard Hot 100')
-            st.write('Would you like a random song that is not in the Billboard Hot 100?'):
+            st.write(f'Would you like a random song similar to {song} that is not in the Billboard Hot 100?')
             if st.button('No'):
                 st.write('Thank you for using the app!')
             if st.button('Yes'):
@@ -161,7 +161,7 @@ else:
             st.write(f'We recommend the song {random_song["Song"].values[0]} by {random_song["Artist"].values[0]}')
         else:
             st.write('The artist is not in the Billboard Hot 100')
-            st.write(f'Would you like a random song similar to {artist} songs that is not in the Billboard Hot 100?'):
+            st.write(f'Would you like a random song similar to {artist} songs that is not in the Billboard Hot 100?')
             if st.button('No'):
                 st.write('Thank you for using the app!')
             if st.button('Yes'):
