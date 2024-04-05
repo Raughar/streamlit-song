@@ -81,10 +81,10 @@ features.rename(columns={'track_id':'id', 'track_name':'name', 'album_name':'alb
 #Reordering the columns
 features = features[['id', 'name', 'album', 'artists', 'explicit', 'danceability', 'energy','key', 'loudness', 'mode', 'speechiness', 'acousticness','instrumentalness', 'liveness', 'valence', 'tempo', 'duration_ms','time_signature']]
 
-#Create a dataframe with the features of the songs
+# Create a dataframe with the features of the songs
 selected_features = features.drop(columns=['id', 'name', 'album', 'artists'])
 
-#Scaling the features
+# Scaling the features
 scaler = StandardScaler()
 scaled_features = scaler.fit_transform(selected_features)
 
@@ -96,7 +96,7 @@ kmeans.fit(scaled_features)
 cluster = kmeans.predict(scaled_features)
 
 # Uniting the clusters with the features and song information
-clustered_features = pd.DataFrame(scaled_features, columns=features.drop(['name', 'artists', 'album'], axis=1).columns)
+clustered_features = pd.DataFrame(scaled_features, columns=selected_features.columns)
 clustered_features['name'] = features['name']
 clustered_features['artists'] = features['artists']
 clustered_features['album'] = features['album']
