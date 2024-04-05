@@ -177,6 +177,3 @@ else:
 #Footer
 st.write('Made by: [Samuel Carmona] ( www.linkedin.com/in/samuelcskories )')
 st.write('GitHub: ( https://github.com/Raughar )')
-st.write('Data Source: [Kaggle Spotify Dataset] (https://www.kaggle.com/yamaerenay/spotify-dataset-19212020-160k-tracks)')
-st.write('Data Source: [Billboard Hot 100] (https://www.billboard.com/charts/hot-100/)')
-st.write('API Source: [Spotify API] (https://developer.spotify.com/documentation/web-api/)')
