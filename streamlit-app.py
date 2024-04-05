@@ -48,7 +48,6 @@ def get_song_features(track_id):
         'tempo': features[0]['tempo'],
         'duration_ms': features[0]['duration_ms'],
         'time_signature': features[0]['time_signature'],
-        'year': track['album']['release_date'][:4],
         'track_id': track_id,
         'name': track['name'],
         'artist': track['artists'][0]['name'],
