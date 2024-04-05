@@ -71,9 +71,18 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 #Reading the data
 features = pd.read_csv('files/kaggle_spotify_dataset.csv')
 billboard = get_billboard_top()
+columns_to_drop = ['Unnamed: 0', 'popularityy', 'track_genre']
+existing_columns = [col for col in columns_to_drop if col in features.columns]
+features.drop(existing_columns, axis=1, inplace=True)
+
+#Renaming the columns
+features.rename(columns={'track_id':'id', 'track_name':'name', 'album_name':'album'}, inplace=True)
+
+#Reordering the columns
+features = features[['id', 'name', 'album', 'artists', 'explicit', 'danceability', 'energy','key', 'loudness', 'mode', 'speechiness', 'acousticness','instrumentalness', 'liveness', 'valence', 'tempo', 'duration_ms','time_signature']]
 
 #Create a dataframe with the features of the songs
-selected_features = features.drop(columns=['id', 'name', 'album', 'album_id', 'artists', 'artist_ids', 'track_number', 'disc_number', 'release_date'])
+selected_features = features.drop(columns=['track_id', 'name', 'album', 'album_id', 'artists'])
 
 #Scaling the features
 scaler = StandardScaler()
