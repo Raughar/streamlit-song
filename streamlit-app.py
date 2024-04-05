@@ -67,14 +67,8 @@ client_secret = st.secrets['CLIENT_SECRET']
 client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-#Creating a cache for the big dataset
-@st.cache
-def get_data():
-    data = pd.read_csv('https://storage.cloud.google.com/data-test-raughar/tracks_features.csv')
-    return data
-
 #Reading the data
-features = get_data()
+features = pd.read_csv(r'files\kaggle_spotify_dataset.csv')
 billboard = get_billboard_top()
 
 # Running KMeans
