@@ -9,6 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 from spotipy.oauth2 import SpotifyClientCredentials
 import os
+import pathlib
 warnings.filterwarnings("ignore")
 
 #Function to get the Billboard Hot 100 songs
@@ -68,7 +69,7 @@ client_credentials_manager = SpotifyClientCredentials(client_id=client_id, clien
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 #Reading the data
-features = pd.read_csv(r'files\kaggle_spotify_dataset.csv')
+features = pd.read_csv('files/kaggle_spotify_dataset.csv')
 billboard = get_billboard_top()
 
 # Running KMeans

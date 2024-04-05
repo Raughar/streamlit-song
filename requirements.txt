@@ -4,3 +4,4 @@ scikit-learn
 spotipy
 bs4
 requests
+pathlib
