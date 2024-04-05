@@ -70,7 +70,7 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 #Creating a cache for the big dataset
 @st.cache
 def get_data():
-    data = pd.read_csv('https://dl.dropboxusercontent.com/scl/fi/zc5e1lnzzjw7knzh58vgy/tracks_features.csv?rlkey=6lkmcs1z9ik6gjyj92blk9bw4v')
+    data = pd.read_csv('https://storage.cloud.google.com/data-test-raughar/tracks_features.csv')
     return data
 
 #Reading the data
