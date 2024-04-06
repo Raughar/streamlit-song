@@ -67,8 +67,13 @@ client_secret = st.secrets['CLIENT_SECRET']
 client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
+#Cache the data
+@st.cache
+def load_data():
+    return pd.read_csv('files/kaggle_spotify_dataset.csv')
+
 #Reading the data
-features = pd.read_csv('files/kaggle_spotify_dataset.csv')
+features = load_data()
 billboard = get_billboard_top()
 columns_to_drop = ['Unnamed: 0', 'popularityy', 'track_genre']
 existing_columns = [col for col in columns_to_drop if col in features.columns]
@@ -88,7 +93,7 @@ scaler = StandardScaler()
 scaled_features = scaler.fit_transform(selected_features)
 
 # Running KMeans
-kmeans = KMeans(n_clusters=15, init='k-means++', max_iter=300, n_init=10, random_state=0)
+kmeans = KMeans(n_clusters=10, init='k-means++', max_iter=300, n_init=10, random_state=0)
 kmeans.fit(scaled_features)
 
 # Saving the clusters in a new variable
