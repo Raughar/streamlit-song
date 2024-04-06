@@ -75,36 +75,37 @@ def load_data():
 #Reading the data
 features = load_data()
 billboard = get_billboard_top()
-# columns_to_drop = ['Unnamed: 0', 'popularityy', 'track_genre']
-# existing_columns = [col for col in columns_to_drop if col in features.columns]
-# features.drop(existing_columns, axis=1, inplace=True)
 
-# #Renaming the columns
-# features.rename(columns={'track_id':'id', 'track_name':'name', 'album_name':'album'}, inplace=True)
-
-# #Reordering the columns
-# features = features[['id', 'name', 'album', 'artists', 'explicit', 'danceability', 'energy','key', 'loudness', 'mode', 'speechiness', 'acousticness','instrumentalness', 'liveness', 'valence', 'tempo', 'duration_ms','time_signature']]
-
-# Create a dataframe with the features of the songs
+# Selecting the features
 selected_features = features.drop(columns=['id', 'name', 'album', 'artists'])
 
-# Scaling the features
+#Initializing the models
 scaler = StandardScaler()
-scaled_features = scaler.fit_transform(selected_features)
-
-# Running KMeans
 kmeans = KMeans(n_clusters=10, init='k-means++', max_iter=300, n_init=10, random_state=0)
-kmeans.fit(scaled_features)
 
-# Saving the clusters in a new variable
-cluster = kmeans.predict(scaled_features)
 
-# Uniting the clusters with the features and song information
-clustered_features = pd.DataFrame(scaled_features, columns=selected_features.columns)
-clustered_features['name'] = features['name']
-clustered_features['artists'] = features['artists']
-clustered_features['album'] = features['album']
-clustered_features['cluster'] = cluster
+@st.cache
+def process_data(features):
+    # Scaling the features
+    scaled_features = scaler.fit_transform(selected_features)
+
+    # Running KMeans
+    kmeans.fit(scaled_features)
+
+    # Saving the clusters in a new variable
+    cluster = kmeans.predict(scaled_features)
+
+    # Uniting the clusters with the features and song information
+    clustered_features = pd.DataFrame(scaled_features, columns=selected_features.columns)
+    clustered_features['name'] = features['name']
+    clustered_features['artists'] = features['artists']
+    clustered_features['album'] = features['album']
+    clustered_features['cluster'] = cluster
+
+    return clustered_features
+
+# Processing the data
+clustered_features = process_data(features)
 
 # Streamlit code
 st.title('Song Recommender')
