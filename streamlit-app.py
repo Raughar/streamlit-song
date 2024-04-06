@@ -70,20 +70,20 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 #Cache the data
 @st.cache_data
 def load_data():
-    return pd.read_csv('files\cleaned_spotify_dataset.csv')
+    return pd.read_csv('files/cleaned_spotify_dataset.csv')
 
 #Reading the data
 features = load_data()
 billboard = get_billboard_top()
-# columns_to_drop = ['Unnamed: 0', 'popularityy', 'track_genre']
-# existing_columns = [col for col in columns_to_drop if col in features.columns]
-# features.drop(existing_columns, axis=1, inplace=True)
+columns_to_drop = ['Unnamed: 0', 'popularityy', 'track_genre']
+existing_columns = [col for col in columns_to_drop if col in features.columns]
+features.drop(existing_columns, axis=1, inplace=True)
 
-# #Renaming the columns
-# features.rename(columns={'track_id':'id', 'track_name':'name', 'album_name':'album'}, inplace=True)
+#Renaming the columns
+features.rename(columns={'track_id':'id', 'track_name':'name', 'album_name':'album'}, inplace=True)
 
-# #Reordering the columns
-# features = features[['id', 'name', 'album', 'artists', 'explicit', 'danceability', 'energy','key', 'loudness', 'mode', 'speechiness', 'acousticness','instrumentalness', 'liveness', 'valence', 'tempo', 'duration_ms','time_signature']]
+#Reordering the columns
+features = features[['id', 'name', 'album', 'artists', 'explicit', 'danceability', 'energy','key', 'loudness', 'mode', 'speechiness', 'acousticness','instrumentalness', 'liveness', 'valence', 'tempo', 'duration_ms','time_signature']]
 
 # Create a dataframe with the features of the songs
 selected_features = features.drop(columns=['id', 'name', 'album', 'artists'])
