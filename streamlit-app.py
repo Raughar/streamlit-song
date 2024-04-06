@@ -102,10 +102,10 @@ def process_data(features):
     clustered_features['album'] = features['album']
     clustered_features['cluster'] = cluster
 
-    return clustered_features
+    return clustered_features, scaler, kmeans
 
 # Processing the data
-clustered_features = process_data(features)
+clustered_features, fitted_scaler, fitted_kmeans = process_data(features)
 
 # Streamlit code
 st.title('Song Recommender')
@@ -149,8 +149,8 @@ if select == 'song':
                     if song in list(features['name']):
                         song_index = features[features['name'] == song].index[0]
                         song_features = selected_features.iloc[song_index]
-                        song_features = scaler.transform([song_features])
-                        song_cluster = kmeans.predict(song_features)
+                        song_features = fitted_scaler.transform([song_features])
+                        song_cluster = fitted_kmeans.predict(song_features)
                         similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
                         st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
                     else:
@@ -162,8 +162,8 @@ if select == 'song':
                         song_features = get_song_features(song_id)
                         song_features = pd.DataFrame(song_features)
                         song_features = song_features.drop(columns=['track_id', 'name', 'artist'])
-                        song_features = scaler.transform(song_features)
-                        song_cluster = kmeans.predict(song_features)
+                        song_features = fitted_scaler.transform(song_features)
+                        song_cluster = fitted_kmeans.predict(song_features)
                         similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
                         st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
             with col2:
@@ -201,8 +201,8 @@ else:
                     song_features = get_song_features(song_id)
                     song_features = pd.DataFrame(song_features)
                     song_features = song_features.drop(columns=['track_id', 'name', 'artist'])
-                    song_features = scaler.transform(song_features)
-                    song_cluster = kmeans.predict(song_features)
+                    song_features = fitted_scaler.transform(song_features)
+                    song_cluster = fitted_kmeans.predict(song_features)
                     similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
                     st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
             with col2:
