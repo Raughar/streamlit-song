@@ -126,29 +126,43 @@ if select == 'song':
         else:
             st.write('The song is not in the Billboard Hot 100')
             st.write(f'Would you like a random song similar to {song} that is not in the Billboard Hot 100?')
-            if st.button('No'):
-                st.write('Thank you for using the app!')
-            if st.button('Yes'):
-                if song in list(features['name']):
-                    song_index = features[features['name'] == song].index[0]
-                    song_features = selected_features.iloc[song_index]
-                    song_features = scaler.transform([song_features])
-                    song_cluster = kmeans.predict(song_features)
-                    similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
-                    st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
-                else:
-                    #Searching for the song in Spotify with the help of Spotipy
-                    results = sp.search(q=song, limit=1)
+            st.markdown("""
+                        <style>
+                            div[data-testid="column"]) {
+                                width: fit-content !important;
+                                flex: unset;
+                            }
+                            div[data-testid="column"]) * {
+                                width: fit-content !important;
+                            }
+                        </style>
+                        """, unsafe_allow_html=True)
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                if st.button('Yes'):
+                    if song in list(features['name']):
+                        song_index = features[features['name'] == song].index[0]
+                        song_features = selected_features.iloc[song_index]
+                        song_features = scaler.transform([song_features])
+                        song_cluster = kmeans.predict(song_features)
+                        similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
+                        st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
+                    else:
+                        #Searching for the song in Spotify with the help of Spotipy
+                        results = sp.search(q=song, limit=1)
 
-                    #Getting the song features
-                    song_id = results['tracks']['items'][0]['id']
-                    song_features = get_song_features(song_id)
-                    song_features = pd.DataFrame(song_features)
-                    song_features = song_features.drop(columns=['track_id', 'name', 'artist'])
-                    song_features = scaler.transform(song_features)
-                    song_cluster = kmeans.predict(song_features)
-                    similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
-                    st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
+                        #Getting the song features
+                        song_id = results['tracks']['items'][0]['id']
+                        song_features = get_song_features(song_id)
+                        song_features = pd.DataFrame(song_features)
+                        song_features = song_features.drop(columns=['track_id', 'name', 'artist'])
+                        song_features = scaler.transform(song_features)
+                        song_cluster = kmeans.predict(song_features)
+                        similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
+                        st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
+            with col2:
+                if st.button('No'):
+                    st.write('Thank you for using the app!')
 
 # If the user selects artist, we will ask for the name of the artist
 else:
@@ -162,18 +176,32 @@ else:
         else:
             st.write('The artist is not in the Billboard Hot 100')
             st.write(f'Would you like a random song similar to {artist} songs that is not in the Billboard Hot 100?')
-            if st.button('No'):
-                st.write('Thank you for using the app!')
-            if st.button('Yes'):
-               #Getting the artist's most popular song
-                song_id = get_popular_song(artist)
-                song_features = get_song_features(song_id)
-                song_features = pd.DataFrame(song_features)
-                song_features = song_features.drop(columns=['track_id', 'name', 'artist'])
-                song_features = scaler.transform(song_features)
-                song_cluster = kmeans.predict(song_features)
-                similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
-                st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
+            st.markdown("""
+                        <style>
+                            div[data-testid="column"]) {
+                                width: fit-content !important;
+                                flex: unset;
+                            }
+                            div[data-testid="column"]) * {
+                                width: fit-content !important;
+                            }
+                        </style>
+                        """, unsafe_allow_html=True)
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                if st.button('Yes'):
+                #Getting the artist's most popular song
+                    song_id = get_popular_song(artist)
+                    song_features = get_song_features(song_id)
+                    song_features = pd.DataFrame(song_features)
+                    song_features = song_features.drop(columns=['track_id', 'name', 'artist'])
+                    song_features = scaler.transform(song_features)
+                    song_cluster = kmeans.predict(song_features)
+                    similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
+                    st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
+            with col2:
+                if st.button('No'):
+                    st.write('Thank you for using the app!')
+
 #Footer
 st.write('Made by: [Samuel Carmona] ( www.linkedin.com/in/samuelcskories )')
-st.write('GitHub: ( https://github.com/Raughar )')
