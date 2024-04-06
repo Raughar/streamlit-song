@@ -16,16 +16,25 @@ warnings.filterwarnings("ignore")
 
 #Function to get the Billboard Hot 100 songs
 def get_billboard_top():
+    #Getting the content of the website
     r = requests.get('https://www.billboard.com/charts/hot-100/').content
     soup = BeautifulSoup(r, 'html.parser')
+
+    #Getting the number 1 song and the rest of the songs
     n1_song = soup.find_all('h3', attrs={'class': 'c-title a-no-trucate a-font-primary-bold-s u-letter-spacing-0021 u-font-size-23@tablet lrv-u-font-size-16 u-line-height-125 u-line-height-normal@mobile-max a-truncate-ellipsis u-max-width-245 u-max-width-230@tablet-only u-letter-spacing-0028@tablet'})
     songs = soup.find_all('h3', attrs={'class': 'c-title a-no-trucate a-font-primary-bold-s u-letter-spacing-0021 lrv-u-font-size-18@tablet lrv-u-font-size-16 u-line-height-125 u-line-height-normal@mobile-max a-truncate-ellipsis u-max-width-330 u-max-width-230@tablet-only'})
+    
+    #Getting the number 1 artist and the rest of the artists
     n1_artist = soup.find_all('span', attrs={'class': 'c-label a-no-trucate a-font-primary-s lrv-u-font-size-14@mobile-max u-line-height-normal@mobile-max u-letter-spacing-0021 lrv-u-display-block a-truncate-ellipsis-2line u-max-width-330 u-max-width-230@tablet-only u-font-size-20@tablet'})
     artists = soup.find_all('span', attrs={'class': 'c-label a-no-trucate a-font-primary-s lrv-u-font-size-14@mobile-max u-line-height-normal@mobile-max u-letter-spacing-0021 lrv-u-display-block a-truncate-ellipsis-2line u-max-width-330 u-max-width-230@tablet-only'})
+    
+    #Creating a DataFrame with the songs and artists
     df = pd.DataFrame({
         "Song": [song.text for song in songs],
         "Artist": [artist.text for artist in artists]
     })
+    
+    #Cleaning the data
     df.loc[0] = [n1_song[0].text, n1_artist[0].text]
     df['Song'] = df['Song'].str.replace('\n', '').str.replace('\t', '')
     df['Artist'] = df['Artist'].str.replace('\n', '').str.replace('\t', '')
@@ -33,7 +42,10 @@ def get_billboard_top():
 
 #Function to get the song features
 def get_song_features(track_id):
+    #Searching for the song in Spotify
     track = sp.track(track_id)
+
+    #Getting the song features
     features = sp.audio_features(track_id)
     song = {
         'explicit': track['explicit'],
@@ -58,7 +70,10 @@ def get_song_features(track_id):
 
 #Function to get the most popular song of the artist
 def get_popular_song(artist):
+    #Searching for the artist in Spotify
     results = sp.search(q=artist, limit=1)
+
+    #Getting the artist's top track
     artist_id = results['tracks']['items'][0]['artists'][0]['id']
     top_tracks = sp.artist_top_tracks(artist_id)
     return top_tracks['tracks'][0]['id']
@@ -112,10 +127,11 @@ clustered_features, fitted_scaler, fitted_kmeans = process_data(features)
 # Streamlit code
 st.title('Song Recommender')
 st.write('A song recomendation app')
+st.write('---')
 
 # Display the Billboard Hot 100 songs on the sidebar
-# st.sidebar.title('Billboard Hot 100')
-# st.sidebar.write('Here are the top 10 songs in the Billboard Hot 100:')
+# st.sidebar.title('')
+# st.sidebar.write('')
 # for i in range(10):
 #     st.sidebar.write(f'{billboard["Song"].values[i]} by {billboard["Artist"].values[i]}')
 
@@ -128,12 +144,15 @@ if select == 'Song':
     if song:
         # Checking if the song is in the Billboard Hot 100
         if song in list(billboard['Song']):
+            # Getting a random song from the Billboard Hot 100
             filtered_billboard = billboard[billboard['Song'] != song]
             random_song = filtered_billboard.sample()
             st.write(f'We recommend the song {random_song["Song"].values[0]} by {random_song["Artist"].values[0]}')
         else:
+            #Asking the user if they want a random song similar to the song that is not in the Billboard Hot 100
             st.write('The song is not in the Billboard Hot 100')
             st.write(f'Would you like a random song similar to {song} that is not in the Billboard Hot 100?')
+            #Creating two buttons for the user to select
             st.markdown("""
                         <style>
                             div[data-testid="column"]) {
@@ -150,6 +169,7 @@ if select == 'Song':
                 if st.button('Yes'):
                     st.session_state['yes_clicked'] = True
                     if st.session_state.get('yes_clicked', False):
+                        #Checking if the song is in the features DataFrame and returning a random song similar to it in the same cluster
                         if song in list(features['name']):
                             song_index = features[features['name'] == song].index[0]
                             song_features = selected_features.iloc[song_index]
@@ -164,10 +184,14 @@ if select == 'Song':
                             #Getting the song features
                             song_id = results['tracks']['items'][0]['id']
                             song_features = get_song_features(song_id)
+                            #Converting the song features to a DataFrame and dropping the columns that are not needed
                             song_features = pd.DataFrame(song_features)
                             song_features = song_features.drop(columns=['track_id', 'name', 'artist'])
+                            #Scaling the song features
                             song_features = fitted_scaler.transform(song_features)
+                            #Predicting the cluster of the song
                             song_cluster = fitted_kmeans.predict(song_features)
+                            #Getting a random song from the same cluster
                             similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
                             st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
             with col2:
@@ -180,12 +204,14 @@ if select == 'Song':
 else:
     artist = st.text_input('Enter the name of an artist')
     if artist:
-        # Checking if the artist is in the Billboard Hot 100
+        # Checking if the artist is in the Billboard Hot 100 and returning a random song from the artist
         if artist in list(billboard['Artist']):
+            # Getting a random song by the artist from the Billboard Hot 100
             filtered_billboard = billboard[billboard['Artist'] == artist]
             random_song = filtered_billboard.sample()
             st.write(f'We recommend the song {random_song["Song"].values[0]} by {random_song["Artist"].values[0]}')
         else:
+            #Asking the user if they want a random song similar to the artist songs that is not in the Billboard Hot 100
             st.write('The artist is not in the Billboard Hot 100')
             st.write(f'Would you like a random song similar to {artist} songs that is not in the Billboard Hot 100?')
             st.markdown("""
@@ -199,6 +225,7 @@ else:
                             }
                         </style>
                         """, unsafe_allow_html=True)
+            #Creating two buttons for the user to select
             col1, col2 = st.columns([1, 1])
             with col1:
                 if st.button('Yes'):
@@ -207,10 +234,14 @@ else:
                 #Getting the artist's most popular song
                     song_id = get_popular_song(artist)
                     song_features = get_song_features(song_id)
+                    #Converting the song features to a DataFrame and dropping the columns that are not needed
                     song_features = pd.DataFrame(song_features)
                     song_features = song_features.drop(columns=['track_id', 'name', 'artist'])
+                    #Scaling the song features
                     song_features = fitted_scaler.transform(song_features)
+                    #Predicting the cluster of the song
                     song_cluster = fitted_kmeans.predict(song_features)
+                    #Getting a random song from the same cluster
                     similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
                     st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
             with col2:
