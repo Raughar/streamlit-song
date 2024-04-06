@@ -84,7 +84,7 @@ scaler = StandardScaler()
 kmeans = KMeans(n_clusters=10, init='k-means++', max_iter=300, n_init=10, random_state=0)
 
 
-@st.cache
+@st.cache_data
 def process_data(features):
     # Scaling the features
     scaled_features = scaler.fit_transform(selected_features)
