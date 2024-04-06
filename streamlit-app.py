@@ -123,7 +123,7 @@ st.write('A song recomendation app')
 select = st.selectbox('Do you want to search by song or artist?', ('Song', 'Artist'))
 
 # If the user selects song, we will ask for the name of the song
-if select == 'song':
+if select == 'Song':
     song = st.text_input('Enter the name of a song')
     if song:
         # Checking if the song is in the Billboard Hot 100
