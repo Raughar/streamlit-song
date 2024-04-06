@@ -148,28 +148,32 @@ if select == 'song':
             col1, col2 = st.columns([1, 1])
             with col1:
                 if st.button('Yes'):
-                    if song in list(features['name']):
-                        song_index = features[features['name'] == song].index[0]
-                        song_features = selected_features.iloc[song_index]
-                        song_features = fitted_scaler.transform([song_features])
-                        song_cluster = fitted_kmeans.predict(song_features)
-                        similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
-                        st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
-                    else:
-                        #Searching for the song in Spotify with the help of Spotipy
-                        results = sp.search(q=song, limit=1)
+                    st.session_state['yes_clicked'] = True
+                    if st.session_state.get('yes_clicked', False):
+                        if song in list(features['name']):
+                            song_index = features[features['name'] == song].index[0]
+                            song_features = selected_features.iloc[song_index]
+                            song_features = fitted_scaler.transform([song_features])
+                            song_cluster = fitted_kmeans.predict(song_features)
+                            similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
+                            st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
+                        else:
+                            #Searching for the song in Spotify with the help of Spotipy
+                            results = sp.search(q=song, limit=1)
 
-                        #Getting the song features
-                        song_id = results['tracks']['items'][0]['id']
-                        song_features = get_song_features(song_id)
-                        song_features = pd.DataFrame(song_features)
-                        song_features = song_features.drop(columns=['track_id', 'name', 'artist'])
-                        song_features = fitted_scaler.transform(song_features)
-                        song_cluster = fitted_kmeans.predict(song_features)
-                        similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
-                        st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
+                            #Getting the song features
+                            song_id = results['tracks']['items'][0]['id']
+                            song_features = get_song_features(song_id)
+                            song_features = pd.DataFrame(song_features)
+                            song_features = song_features.drop(columns=['track_id', 'name', 'artist'])
+                            song_features = fitted_scaler.transform(song_features)
+                            song_cluster = fitted_kmeans.predict(song_features)
+                            similar_songs = clustered_features[clustered_features['cluster'] == song_cluster[0]].sample()
+                            st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
             with col2:
                 if st.button('No'):
+                    st.session_state['no_clicked'] = True
+                if st.session_state.get('no_clicked', False):
                     st.write('Thank you for using the app!')
 
 # If the user selects artist, we will ask for the name of the artist
@@ -198,6 +202,8 @@ else:
             col1, col2 = st.columns([1, 1])
             with col1:
                 if st.button('Yes'):
+                    st.session_state['yes_clicked'] = True
+                if st.session_state.get('yes_clicked', False):
                 #Getting the artist's most popular song
                     song_id = get_popular_song(artist)
                     song_features = get_song_features(song_id)
@@ -209,6 +215,8 @@ else:
                     st.write(f'We recommend the song {similar_songs["name"].values[0]} by {similar_songs["artists"].values[0]}')
             with col2:
                 if st.button('No'):
+                    st.session_state['no_clicked'] = True
+                if st.session_state.get('no_clicked', False):
                     st.write('Thank you for using the app!')
 
 #Footer
