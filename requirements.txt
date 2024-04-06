@@ -5,3 +5,4 @@ spotipy
 bs4
 requests
 pathlib
+htbuilder
